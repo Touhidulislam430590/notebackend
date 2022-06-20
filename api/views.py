@@ -2,7 +2,8 @@ from django.shortcuts import render
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from .models import notesModel
+from .models import NotesModel
+from .serializer import NoteSerializer
 
 # Create your views here.
 
@@ -29,5 +30,13 @@ def getRoutes(request):
 
 @api_view(['GET'])
 def notesView(request):
-    data = notesModel.objects.all()
-    return Response('notes')
+    data = NotesModel.objects.all()
+    serializer = NoteSerializer(data, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def notesView(request, pk):
+    data = NotesModel.objects.get(id=pk)
+    serializer = NoteSerializer(data, many=False)
+    return Response(serializer.data)
